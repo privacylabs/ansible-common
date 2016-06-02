@@ -1,0 +1,43 @@
+  - name: Update cache and upgrade all installed packages to latest
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      upgrade: safe
+    become: yes
+
+  - name: Create /data folder for persistent data
+    file:
+      path: /data
+      state: directory
+    become: yes
+
+  - name: Install tools (git, unzip, ntp)
+    apt:
+      name: '{{ item }}'
+    become: yes
+    with_items: [ 'git', 'unzip', 'ntp']
+
+  - name: Start NTP
+    service:
+      name: ntp
+      state: started
+      enabled: yes
+    become: yes
+
+  - name: Install fail2ban
+    apt:
+      name: fail2ban
+    become: yes
+
+  - name: Copy over fail2ban jail config
+    template:
+      src: jail.conf.j2
+      dest: /etc/fail2ban/jail.conf
+    become: yes
+
+  - name: Restart fail2ban to pick up changed config
+    service:
+      name: fail2ban
+      state: restarted
+      enabled: yes
+    become: yes
