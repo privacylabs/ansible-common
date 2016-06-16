@@ -41,3 +41,4 @@
       state: restarted
       enabled: yes
     become: yes
+    when: image_creation is undefined
