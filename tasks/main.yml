@@ -10,12 +10,16 @@
       path: /data
       state: directory
     become: yes
+    tags:
+      - packages
 
   - name: Install tools (git, unzip, ntp)
     apt:
       name: '{{ item }}'
     become: yes
     with_items: [ 'git', 'unzip', 'ntp']
+    tags:
+      - packages
 
   - name: Start NTP
     service:
@@ -28,12 +32,16 @@
     apt:
       name: fail2ban
     become: yes
+    tags:
+      - packages
 
   - name: Copy over fail2ban jail config
     template:
       src: jail.conf.j2
       dest: /etc/fail2ban/jail.conf
     become: yes
+    tags:
+      - configuration
 
   - name: Restart fail2ban to pick up changed config
     service:
@@ -41,4 +49,5 @@
       state: restarted
       enabled: yes
     become: yes
-    when: image_creation is undefined
+    tags:
+      - configuration
