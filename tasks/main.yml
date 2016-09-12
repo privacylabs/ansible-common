@@ -27,6 +27,8 @@
       state: started
       enabled: yes
     become: yes
+    tags:
+      - packages
 
   - name: Install fail2ban
     apt:
@@ -41,7 +43,7 @@
       dest: /etc/fail2ban/jail.conf
     become: yes
     tags:
-      - configuration
+      - packages
 
   - name: Restart fail2ban to pick up changed config
     service:
@@ -50,4 +52,4 @@
       enabled: yes
     become: yes
     tags:
-      - configuration
+      - packages
